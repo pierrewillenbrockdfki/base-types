@@ -119,6 +119,7 @@ rock_library(
         base-logging
         eigen3
     DEPS_CMAKE ${BASE-TYPES_EXTRA_DEPS_CMAKE}
+    EXPORT base-types-targets
 )
 
 if(SISL_FOUND)
@@ -130,3 +131,25 @@ endif()
 
 configure_file(base-lib.pc.in ${CMAKE_BINARY_DIR}/base-lib.pc @ONLY)
 install(FILES ${CMAKE_BINARY_DIR}/base-lib.pc DESTINATION lib/pkgconfig)
+
+# Export the library interface
+install(EXPORT base-types-targets
+        NAMESPACE base-types::
+        DESTINATION lib/cmake/base-types
+)
+
+# Create and install the version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("base-types-config-version.cmake"
+        VERSION ${BASE_VERSION}
+        COMPATIBILITY SameMajorVersion
+)
+
+install(
+        FILES
+                base-types-config.cmake
+                base-types-dependencies.cmake
+                ${PROJECT_BINARY_DIR}/src/base-types-config-version.cmake
+        DESTINATION
+                lib/cmake/base-types
+)
